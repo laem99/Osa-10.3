@@ -5,7 +5,7 @@ import theme from "../theme";
 
 export const styles = StyleSheet.create({
     button: {
-        marginTop: 40,
+        paddingTop: 80,
         backgroundColor: theme.colors.primary,
         padding: 20,
         borderRadius: 5,
@@ -13,14 +13,15 @@ export const styles = StyleSheet.create({
     }
 });
 
-const SignInForm = ({ onSubmit }) => {
+const SignUpForm = ({ onSubmit }) => {
     return (
         <View style={{ flex: 1 }}>
             <FormikTextInput testID="usernameField" name="username" placeholder="Username" />
             <FormikTextInput testID="passwordField" name="password" placeholder="Password" />
-            <Button testID='submit_form' style={styles.button} title="Sign In" onPress={onSubmit} />
+            <FormikTextInput testID="confirmPasswordField" name="confirm_password" placeholder="Confirm Password" />
+            <Button style={styles.button} title="Sign Un" onPress={onSubmit} />
         </View>
     );
 };
 
-export default SignInForm;
+export default SignUpForm;

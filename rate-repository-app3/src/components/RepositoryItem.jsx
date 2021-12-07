@@ -1,8 +1,10 @@
 import React from "react";
-import { FlatList, Image, StyleSheet, View } from "react-native";
+import { Button, Image, Linking, Pressable, StyleSheet, View } from "react-native";
 import LanguageTab from "./LanguageTab";
 import StyledText from './Text';
-import { NumberCount, Numbers } from "./Count";
+import { NumberCount } from "./Count";
+import theme from "../theme";
+import { useHistory } from "react-router";
 
 const styles = StyleSheet.create({
     container: {
@@ -29,35 +31,51 @@ const styles = StyleSheet.create({
     textStyle: {
         padding: 2,
     },
-    separator: {
-        height: 10,
-        backgroundColor: '#e1e4e8',
-    },
+    button: {
+        marginTop: 40,
+        backgroundColor: theme.colors.primary,
+        padding: 20,
+        borderRadius: 5,
+        margin: 15,
+    }
 });
 
-const ItemSeparator = () => <View style={styles.separator} />;
-
-const RepositoryItem = (props) => {
+const RepositoryItem = ({ item, button }) => {
+    const history = useHistory();
+    const {
+        id,
+        fullName,
+        description,
+        language,
+        forksCount,
+        stargazersCount,
+        ratingAverage,
+        reviewCount,
+        ownerAvatarUrl,
+        url,
+      } = item;
     return (
-        <FlatList ListFooterComponent={<View style={{height: 20}}/>} ItemSeparatorComponent={ItemSeparator} data={props.data} renderItem={({ item }) => (
-            <View style={styles.container}>
-                <View style={styles.rowContainer}>
-                    <Image style={styles.logo} source={{ uri: item.ownerAvatarUrl }} />
-                    <View style={styles.mainInfo}>
-                        <StyledText style={styles.textStyle} fontWeight="bold" fontSize="subheading">{item.fullName}</StyledText>
-                        <StyledText style={styles.textStyle} color="textSecondary">{item.description}</StyledText>
-                        <LanguageTab style={{ alignSelf: 'flex-start' }} language={item.language} />
-                    </View>
-                </View>
-                <View style={styles.rowContainer2}>
-                    <NumberCount number={item.stargazersCount} name="Stars" />
-                    <NumberCount number={item.forksCount} name="Forks" />
-                    <Numbers number={item.reviewCount} name="Reviews" />
-                    <Numbers number={item.ratingAverage} name="Rating" />
+        <Pressable onPress={() => history.push(`/${id}`)} style={styles.container}>
+            <View style={styles.rowContainer}>
+                <Image style={styles.logo} source={{ uri: ownerAvatarUrl }} />
+                <View style={styles.mainInfo}>
+                    <StyledText testID="repo_name" style={styles.textStyle} fontWeight="bold" fontSize="subheading">{fullName}</StyledText>
+                    <StyledText testID="repo_desc" style={styles.textStyle} color="textSecondary">{description}</StyledText>
+                    <LanguageTab style={{ alignSelf: 'flex-start' }} language={language} />
                 </View>
             </View>
-        )}>
-        </FlatList>
+            <View style={styles.rowContainer2}>
+                <NumberCount number={stargazersCount} name="Stars" />
+                <NumberCount number={forksCount} name="Forks" />
+                <NumberCount number={reviewCount} name="Reviews" />
+                <NumberCount number={ratingAverage} name="Rating" />
+            </View>
+            <View>
+                {(button)
+                    ? <Button style={styles.button} title="Open in Github" onPress={() => Linking.openURL(url)} />
+                    : null}
+            </View>
+        </Pressable>
     );
 };
 

@@ -10,16 +10,7 @@ export const NumberCount = (props) => {
 
     return (
         <View style={{ display: 'flex', alignItems: 'center' }}>
-            <StyledText fontWeight="bold" fontSize="subheading">{number}</StyledText>
-            <StyledText fontSize="textSecondary">{props.name}</StyledText>
-        </View>
-    );
-};
-
-export const Numbers = (props) => {
-    return (
-        <View style={{ display: 'flex', alignItems: 'center' }}>
-            <StyledText fontWeight="bold" fontSize="subheading">{props.number}</StyledText>
+            <StyledText testID="repo_count" fontWeight="bold" fontSize="subheading">{number}</StyledText>
             <StyledText fontSize="textSecondary">{props.name}</StyledText>
         </View>
     );

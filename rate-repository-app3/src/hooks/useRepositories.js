@@ -3,13 +3,43 @@ import { useQuery } from '@apollo/client';
 import { useState, useEffect } from 'react';
 import { Text } from 'react-native';
 import { GET_REPOSITORIES } from '../graphql/queries';
+import sortBySelectedValues from '../utils/sortBySelectedValues';
 
-const useRepositories = () => {
+const useRepositories = (variables) => {
   const [repositories, setRepositories] = useState();
 
-  const { data, error, loading } = useQuery(GET_REPOSITORIES, {
+  const sortByValues = sortBySelectedValues(variables.sortBy);
+  variables = {
+    ...sortByValues,
+    variables
+  };
+
+  const { data, error, loading, fetchMore, ...result } = useQuery(GET_REPOSITORIES, {
+    variables: variables.variables,
     fetchPolicy: 'cache-and-network',
   });
+
+  const handleFetchMore = () => {
+    const canFetchMore = !loading && data?.repositories.pageInfo.hasNextPage;
+
+    if (!canFetchMore) {
+      return;
+    }
+
+    fetchMore({
+      variables: {
+        after: data.repositories.pageInfo.endCursor,
+        ...variables,
+      },
+    });
+
+    return {
+      repositories: data?.repositories,
+      fetchMore: handleFetchMore,
+      loading,
+      ...result,
+    };
+  };
 
   const fetchRepositories = async () => {
     if (data) {
@@ -30,7 +60,7 @@ const useRepositories = () => {
     return <Text>Loading...</Text>;
   }
 
-  return { repositories, loading, refetch: fetchRepositories };
+  return { fetchMore: handleFetchMore, repositories, loading, refetch: fetchRepositories };
 };
 
 export default useRepositories;

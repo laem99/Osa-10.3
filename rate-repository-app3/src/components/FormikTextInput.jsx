@@ -33,13 +33,31 @@ const styles = StyleSheet.create({
   }
 });
 
-const FormikTextInput = ({ name, ...props }) => {
+export const FormikNumberInput = ({ name, testID, ...props }) => {
   const [field, meta, helpers] = useField(name);
   const showError = meta.touched && meta.error;
 
   return (
     <View style={styles.inputContainer}>
-      <TextInput style={(!meta.error) ? styles.input : styles.inputError}
+    <TextInput keyboardType="numeric" testID={testID} style={(!meta.error) ? styles.input : styles.inputError}
+      onChangeText={value => helpers.setValue(value)}
+      onBlur={() => helpers.setTouched(true)}
+      value={field.value}
+      error={showError}
+      {...props}
+    />
+    {showError && <Text style={styles.errorText}>{meta.error}</Text>}
+  </View>
+  );
+};
+
+const FormikTextInput = ({ name, testID, ...props }) => {
+  const [field, meta, helpers] = useField(name);
+  const showError = meta.touched && meta.error;
+
+  return (
+    <View style={styles.inputContainer}>
+      <TextInput testID={testID} style={(!meta.error) ? styles.input : styles.inputError}
         onChangeText={value => helpers.setValue(value)}
         onBlur={() => helpers.setTouched(true)}
         value={field.value}
